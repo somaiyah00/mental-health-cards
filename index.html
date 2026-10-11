@@ -1,0 +1,356 @@
+انسخي الكود التالي كاملًا والصقيه في ملف باسم index.html، ثم ارفعيه إلى GitHub Pages أو أي استضافة. سيظهر الموقع كصفحة ويب تفاعلية تحتوي على 12 ظرفًا يفتح رسائل إيجابية مع زر مشاركة لكل بطاقة.
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>بطاقتك بكل حب</title>
+
+https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Tajawal',sans-serif;
+}
+
+body{
+background:#f6f4ef;
+padding:20px;
+color:#274034;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+}
+
+header{
+text-align:center;
+margin-bottom:40px;
+}
+
+.subtitle{
+font-size:24px;
+font-weight:700;
+color:#7c8a78;
+margin-bottom:10px;
+}
+
+.title{
+font-size:80px;
+font-weight:800;
+color:#234233;
+text-shadow:4px 4px 0 rgba(0,0,0,.08);
+}
+
+.desc{
+margin:25px auto 15px;
+background:#e7e5dd;
+padding:18px;
+border-radius:40px;
+font-size:28px;
+font-weight:700;
+max-width:900px;
+}
+
+.note{
+font-size:24px;
+color:#73816e;
+font-weight:700;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:25px;
+margin-top:40px;
+}
+
+.card{
+height:180px;
+cursor:pointer;
+perspective:1000px;
+}
+
+.inner{
+position:relative;
+width:100%;
+height:100%;
+transition:transform .8s;
+transform-style:preserve-3d;
+}
+
+.card.open .inner{
+transform:rotateY(180deg);
+}
+
+.front,
+.back{
+position:absolute;
+width:100%;
+height:100%;
+border-radius:12px;
+overflow:hidden;
+backface-visibility:hidden;
+box-shadow:0 5px 18px rgba(0,0,0,.15);
+}
+
+.front{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+position:relative;
+}
+
+.front::after{
+content:'';
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+height:100%;
+clip-path:polygon(0 35%,50% 75%,100% 35%,100% 100%,0 100%);
+border-top:2px solid rgba(255,255,255,.5);
+}
+
+.num{
+width:70px;
+height:70px;
+background:#fff;
+border-radius:50%;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:34px;
+font-weight:800;
+z-index:2;
+}
+
+.heart{
+font-size:28px;
+margin-top:8px;
+z-index:2;
+}
+
+.back{
+background:#fff;
+transform:rotateY(180deg);
+display:flex;
+align-items:center;
+justify-content:center;
+padding:15px;
+}
+
+.content{
+text-align:center;
+}
+
+.content p{
+font-size:20px;
+line-height:1.8;
+font-weight:700;
+margin-bottom:15px;
+}
+
+.share-btn{
+background:#234233;
+color:#fff;
+border:none;
+padding:10px 20px;
+border-radius:30px;
+cursor:pointer;
+font-size:15px;
+font-weight:700;
+}
+
+.share-btn:hover{
+background:#345945;
+}
+
+.c1,.c6,.c8,.c10,.c12{
+background:#bcc7b7;
+}
+
+.c2,.c4,.c9,.c11{
+background:#e5cccc;
+}
+
+.c3,.c5,.c7{
+background:#ece8dc;
+}
+
+footer{
+margin-top:50px;
+text-align:center;
+font-size:20px;
+color:#667460;
+padding:20px;
+}
+
+@media(max-width:768px){
+
+.title{
+font-size:50px;
+}
+
+.desc{
+font-size:20px;
+}
+
+.note{
+font-size:18px;
+}
+
+.content p{
+font-size:18px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+
+<div class="subtitle">
+🌿 اليوم العالمي للصحة النفسية 🌿
+</div>
+
+<h1 class="title">
+💚 بطاقتك بكل حب 💚
+</h1>
+
+<div class="desc">
+كلمات جميلة تصنع أثرًا في القلوب
+</div>
+
+<div class="note">
+💚 إهداء من المعلمة سمية العوفي 💚
+</div>
+
+</header>
+
+<div class="cards" id="cards"></div>
+
+<footer>
+🌿 الصحة النفسية ليست رفاهية، بل أساس لحياة متوازنة وسعيدة 🌿
+</footer>
+
+</div>
+
+<script>
+
+const messages = [
+
+"وجودك يضيف شيئاً جميلاً لهذا العالم 🌷",
+
+"كل يوم جديد فرصة للنجاح والتقدم ✨",
+
+"أنت أقوى مما تظن وأكثر قدرة مما تتخيل 💚",
+
+"لا تنسَ أن تفخر بما أنجزته حتى وإن كان بسيطاً 🌟",
+
+"الراحة جزء مهم من النجاح وليست تأخيراً له 🌿",
+
+"الكلمات الطيبة التي تقدمها تعود إليك جمالاً ومحبة 🤍",
+
+"امتلك الشجاعة لتبدأ مهما بدا الطريق طويلاً 🚀",
+
+"كل خطوة صغيرة تقربك من هدفك الكبير ⭐",
+
+"ابتسامتك قد تكون سبباً في سعادة شخص اليوم 😊",
+
+"امنح نفسك التقدير الذي تستحقه 💐",
+
+"الأيام الصعبة مؤقتة وقوتك دائمة 🦋",
+
+"شكراً لك لأنك تواصل المحاولة والتقدم كل يوم 💝"
+
+];
+
+const container = document.getElementById("cards");
+
+messages.forEach((message,index)=>{
+
+let card = document.createElement("div");
+
+card.className="card";
+
+card.innerHTML=`
+
+<div class="inner">
+
+<div class="front c${index+1}">
+<div class="num">${index+1}</div>
+<div class="heart">💚</div>
+</div>
+
+<div class="back">
+<div class="content">
+
+<p>${message}</p>
+
+<button class="share-btn"
+onclick="shareMessage(event,'${message}')">
+
+📤 مشاركة البطاقة
+
+</button>
+
+</div>
+</div>
+
+</div>
+
+`;
+
+card.addEventListener("click",function(){
+card.classList.toggle("open");
+});
+
+container.appendChild(card);
+
+});
+
+async function shareMessage(event,msg){
+
+event.stopPropagation();
+
+const text =
+"💚 بطاقتك بكل حب 💚\n\n" +
+msg +
+"\n\n🌿 اليوم العالمي للصحة النفسية 🌿\n\n💚 إهداء من المعلمة سمية العوفي";
+
+if(navigator.share){
+
+try{
+await navigator.share({
+title:"بطاقتك بكل حب",
+text:text
+});
+}catch(err){}
+
+}else{
+
+navigator.clipboard.writeText(text);
+alert("تم نسخ الرسالة ويمكنك مشاركتها الآن");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
