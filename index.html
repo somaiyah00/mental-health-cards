@@ -11,7 +11,57 @@
 https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap
 
 <style>
+.popup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.5);
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
 
+.popup-content{
+background:white;
+width:90%;
+max-width:500px;
+padding:30px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+.popup-message{
+font-size:24px;
+line-height:1.8;
+margin-bottom:20px;
+color:#244234;
+font-weight:700;
+}
+
+.close-btn{
+background:#c0392b;
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:25px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.share-btn-popup{
+background:#244234;
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:25px;
+cursor:pointer;
+margin:10px;
+}
+``
 *{
 margin:0;
 padding:0;
@@ -73,7 +123,7 @@ margin-top:40px;
 }
 
 .card{
-height:180px;
+height:220px;
 cursor:pointer;
 perspective:1000px;
 }
@@ -145,7 +195,9 @@ transform:rotateY(180deg);
 display:flex;
 align-items:center;
 justify-content:center;
-padding:15px;
+padding:10px;
+overflow:hidden;
+height:100%;
 }
 
 .content{
@@ -153,10 +205,10 @@ text-align:center;
 }
 
 .content p{
-font-size:20px;
-line-height:1.8;
+font-size:17px;
+line-height:1.5;
 font-weight:700;
-margin-bottom:15px;
+margin-bottom:10px;
 }
 
 .share-btn{
@@ -254,97 +306,83 @@ font-size:18px;
 const messages = [
 
 "وجودك يضيف شيئاً جميلاً لهذا العالم 🌷",
-
 "كل يوم جديد فرصة للنجاح والتقدم ✨",
-
 "أنت أقوى مما تظن وأكثر قدرة مما تتخيل 💚",
-
 "لا تنسَ أن تفخر بما أنجزته حتى وإن كان بسيطاً 🌟",
-
 "الراحة جزء مهم من النجاح وليست تأخيراً له 🌿",
-
 "الكلمات الطيبة التي تقدمها تعود إليك جمالاً ومحبة 🤍",
-
 "امتلك الشجاعة لتبدأ مهما بدا الطريق طويلاً 🚀",
-
 "كل خطوة صغيرة تقربك من هدفك الكبير ⭐",
-
 "ابتسامتك قد تكون سبباً في سعادة شخص اليوم 😊",
-
 "امنح نفسك التقدير الذي تستحقه 💐",
-
 "الأيام الصعبة مؤقتة وقوتك دائمة 🦋",
-
 "شكراً لك لأنك تواصل المحاولة والتقدم كل يوم 💝"
 
 ];
+
+let currentMessage="";
 
 const container = document.getElementById("cards");
 
 messages.forEach((message,index)=>{
 
-let card = document.createElement("div");
+let card=document.createElement("div");
 
 card.className="card";
 
 card.innerHTML=`
-
-<div class="inner">
-
 <div class="front c${index+1}">
 <div class="num">${index+1}</div>
 <div class="heart">💚</div>
 </div>
-
-<div class="back">
-<div class="content">
-
-<p>${message}</p>
-
-<button class="share-btn"
-onclick="shareMessage(event,'${message}')">
-
-📤 مشاركة البطاقة
-
-</button>
-
-</div>
-</div>
-
-</div>
-
 `;
 
-card.addEventListener("click",function(){
-card.classList.toggle("open");
+card.addEventListener("click",()=>{
+
+currentMessage = message;
+
+document.getElementById("popupMessage").innerHTML = message;
+
+document.getElementById("popup").style.display = "flex";
+
 });
 
 container.appendChild(card);
 
 });
 
-async function shareMessage(event,msg){
+function closePopup(){
 
-event.stopPropagation();
+document.getElementById("popup").style.display = "none";
 
-const text =
-"💚 بطاقتك بكل حب 💚\n\n" +
-msg +
-"\n\n🌿 اليوم العالمي للصحة النفسية 🌿\n\n💚 إهداء من المعلمة سمية العوفي";
+}
+
+async function shareCurrentMessage(){
+
+const text = `💚 بطاقتك بكل حب 💚
+
+${currentMessage}
+
+🌿 اليوم العالمي للصحة النفسية
+
+💚 إهداء من المعلمة سمية العوفي`;
 
 if(navigator.share){
 
 try{
+
 await navigator.share({
 title:"بطاقتك بكل حب",
 text:text
 });
-}catch(err){}
+
+}catch(error){}
 
 }else{
 
 navigator.clipboard.writeText(text);
-alert("تم نسخ الرسالة ويمكنك مشاركتها الآن");
+
+alert("تم نسخ الرسالة للمشاركة");
 
 }
 
@@ -352,5 +390,22 @@ alert("تم نسخ الرسالة ويمكنك مشاركتها الآن");
 
 </script>
 
+<div class="popup" id="popup">
+
+<div class="popup-content">
+
+<div class="popup-message" id="popupMessage"></div>
+
+<button class="share-btn-popup" onclick="shareCurrentMessage()">
+📤 مشاركة البطاقة
+</button>
+
+<button class="close-btn" onclick="closePopup()">
+إغلاق
+</button>
+
+</div>
+
+</div>
 </body>
 </html>
